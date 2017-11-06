@@ -6,7 +6,7 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
 class SendMail(object):
-    def send_mail(days):
+    def send_mail(self, days):
         sender = '**'
         receiver = '**'
         subject = 'pushing xinlan log error'
