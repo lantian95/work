@@ -3,6 +3,7 @@ import os
 import shutil
 import traceback
 from log_tool import toollogger
+from send_mail import SendMail
 
 def get_domain():
     domains = []
@@ -19,6 +20,7 @@ def get_status_output(cmd):
     output, err = p.communicate()
     return p.returncode, output, err
 
+# shell 命令最多重试3次
 def get_status_output_with_retry(cmd):
     max_retry = 3
     while True:
@@ -46,6 +48,7 @@ def mkdir_is_not_exist(path):
     if not is_path_exist(path):
         os.makedirs(path)
 
+# 目录下的所有文件名
 def get_recursive_file_list(path):
     current_files = os.listdir(path)
     all_files = []
@@ -77,13 +80,14 @@ def push_file_ftp(file_path, domain_path, day_path, ftp_path):
             ftp_path=ftp_path
             )
         status, output, err = get_status_output_with_retry(cmd)
+        # 获取推送到FTP服务器文件的大小
         with open("/data1/hry/run.log") as asf:
             line = asf.readlines()[-2]
             size = line.split(" ")[0]
             ftp_size = size if "bytes sent in" in line else "0"
         return ftp_size
     except Exception:
-        rtbtoollogger.error(traceback.format_exc())
+        toollogger.error(traceback.format_exc())
         return "0"
 
 
@@ -99,17 +103,17 @@ def run(day_format):
             all_files = get_recursive_file_list(local_path)
             for file_path in all_files:
                 local_size = get_file_size(file_path)
-                hour = file_path.split("/")[-1].split(".")[0]
+                hour = file_path.split("/")[-1]
                 domain_path = "/"+domain
                 day_path = "./" + day_format
-                ftp_path = "/"+domain + "/" + day_format + "/" + day_format+"_"+hour+".gz"
+                ftp_path = "/"+domain + "/" + day_format + "/" + day_format+"_"+hour
                 ftp_size = push_file_ftp(file_path, domain_path, day_path, ftp_path)
-                if ftp_size==0:
+                if ftp_size=="0":
                     toollogger.error(traceback.format_exc())
-                    #os.system("""echo "hi,{file_path} failed to put to ftp ." | mail -s "error"  {recv}
-
+                    SendMail().send_mail(day_format)
                 else:
-                    toollogger.info(ftp_path+"\t"+str(local_size)+"\t"+ftp_size)
+                    toollogger.info(
+                        ftp_path + "\t" + str(local_size) + "\t" + ftp_size + "\t" +str(int(local_size) - int(ftp_size)))
         
 if __name__ == '__main__':
     if len(sys.argv) == 2:
