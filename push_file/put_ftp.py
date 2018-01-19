@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from subprocess import Popen, PIPE
 import os
 import shutil
@@ -62,33 +63,33 @@ def get_recursive_file_list(path):
     return all_files 
 
 def push_file_ftp(file_path, domain_path, day_path, ftp_path):
+    cmd = """echo "open ip
+                 prompt
+                 user ** ***
+                 mkdir  {domain_path}
+                 cd  {domain_path}
+                 mkdir  {day_path}
+                 cd  {day_path}
+                 binary
+                 put {file_path} {ftp_path}
+                 close
+                 bye" |ftp -v -n  >>run.log """.format(
+        file_path=file_path,
+        domain_path=domain_path,
+        day_path=day_path,
+        ftp_path=ftp_path
+    )
     try:
-        cmd = """echo "open ip
-             prompt                         
-             user ** ***
-             mkdir  {domain_path}
-             cd  {domain_path}
-             mkdir  {day_path}
-             cd  {day_path}
-             binary
-             put {file_path} {ftp_path}
-             close
-             bye" |ftp -v -n  >>run.log """.format(
-            file_path=file_path,
-            domain_path=domain_path,
-            day_path=day_path,
-            ftp_path=ftp_path
-            )
         status, output, err = get_status_output_with_retry(cmd)
         # 获取推送到FTP服务器文件的大小
         with open("/data1/hry/run.log") as asf:
             line = asf.readlines()[-2]
             size = line.split(" ")[0]
             ftp_size = size if "bytes sent in" in line else "0"
-        return ftp_size
+        return ftp_size, cmd
     except Exception:
         toollogger.error(traceback.format_exc())
-        return "0"
+        return "0", cmd
 
 
 def run(day_format):
@@ -107,10 +108,10 @@ def run(day_format):
                 domain_path = "/"+domain
                 day_path = "./" + day_format
                 ftp_path = "/"+domain + "/" + day_format + "/" + day_format+"_"+hour
-                ftp_size = push_file_ftp(file_path, domain_path, day_path, ftp_path)
+                ftp_size, cmds = push_file_ftp(file_path, domain_path, day_path, ftp_path)
                 if ftp_size=="0":
                     toollogger.error(traceback.format_exc())
-                    SendMail().send_mail(day_format)
+                    SendMail().send_mail(day_format, cmds)
                 else:
                     toollogger.info(
                         ftp_path + "\t" + str(local_size) + "\t" + ftp_size + "\t" +str(int(local_size) - int(ftp_size)))

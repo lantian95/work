@@ -6,14 +6,14 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
 class SendMail(object):
-    def send_mail(self, days):
+    def send_mail(self, days, cmd):
         sender = '**'
         receiver = '**'
         subject = 'pushing xinlan log error'
         smtpserver = '**'
         username = '**'
         password = '**'
-        message = 'pushing xinlan log has error on '+days
+        message = 'pushing xinlan log has error on '+days+" about "+cmd
         msg = MIMEText(message, 'plain', 'utf-8')
         msg['Subject'] = Header(subject, 'utf-8')
         msg['From'] = sender
