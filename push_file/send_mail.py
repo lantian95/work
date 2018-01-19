@@ -27,6 +27,7 @@ class SendMail(object):
 if __name__ == '__main__':
     if len(sys.argv) == 2:
         _, days = tuple(sys.argv)
+        cmd = "info"
+        SendMail().send_mail(days)
     else:
         print("param error")
-    SendMail().send_mail(days)
