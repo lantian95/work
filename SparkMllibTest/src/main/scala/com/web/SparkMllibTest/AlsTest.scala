@@ -1,4 +1,4 @@
-package com.fastweb.SparkMllibTest
+package com.web.SparkMllibTest
 
 import org.apache.spark.mllib.recommendation.ALS
 import org.apache.spark.mllib.recommendation.Rating

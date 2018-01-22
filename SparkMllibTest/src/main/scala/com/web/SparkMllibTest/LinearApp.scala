@@ -1,4 +1,4 @@
-package com.fastweb.SparkMllibTest
+package com.web.SparkMllibTest
 
 import org.apache.spark.SparkConf
 import org.apache.spark.SparkContext
@@ -19,6 +19,7 @@ object LinearApp {
       //new  and old different
       LabeledPoint(parts(0).toDouble, Vectors.dense(parts(1).split(" ").map(x => x.toDouble)))
     }
+
 
     // Building the model
     val numIterations = 20

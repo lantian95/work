@@ -1,4 +1,4 @@
-package com.fastweb.SparkMllibTest
+package com.web.SparkMllibTest
 
 import org.apache.spark.mllib.clustering.KMeans
 import org.apache.spark.mllib.linalg.Vectors

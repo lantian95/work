@@ -1,4 +1,4 @@
-package com.fastweb.SparkMllibTest
+package com.web.SparkMllibTest
 
 import org.apache.spark.mllib.recommendation.ALS
 import org.apache.spark.mllib.recommendation.Rating
@@ -94,6 +94,7 @@ object AlsApp {
 
     val itemFactors = model.productFeatures.map { case (id, factor) => factor }.collect()
     val itemMatrix = new DoubleMatrix(itemFactors)
+    //println(itemMatrix)
     println(itemMatrix.rows, itemMatrix.columns)
 
     val imBroadcast = sc.broadcast(itemMatrix)
