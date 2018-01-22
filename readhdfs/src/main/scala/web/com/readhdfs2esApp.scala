@@ -1,4 +1,4 @@
-package fastweb.com
+package web.com
 
 /**
   * Created by Administrator on 2017/6/23.

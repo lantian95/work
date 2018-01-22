@@ -1,4 +1,4 @@
-package fastweb.com
+package web.com
 
 import java.text.SimpleDateFormat
 import java.util.{ArrayList, Date}
