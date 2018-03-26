@@ -17,7 +17,6 @@ object FastmediaCs {
 
   def parseLine(line: String, channel: Channel): FastmediaCs = {
 
-    //CDNLOG_MEDIA_cache ctl-gd-121-010-121-077 fastmedia rtmp [22/Aug/2016:11:35:24 +0800] 23294_79666_1471836919915 fastweb.upstream.yy.com live 70384468_70384468 115.238.138.48 121.10.121.77 push
 
     val index_time = line.indexOf("]")
 
