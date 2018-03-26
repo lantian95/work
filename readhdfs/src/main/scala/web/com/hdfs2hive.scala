@@ -74,11 +74,6 @@ object hdfs2hive  {
       var hour = timestmp.substring(8, 10)
       //var minute = timestmp.substring(10, 12) + "2"
 
-      //记录消费条数到本地
-      //            val consumelog = new FileWriter(new File(s"/hadoop/cdnlog/cdnlog_parquet/c01i05/consumelog/consume-${month+day}"),true)
-      //            consumelog.write("consume count"+" "+timestmp+" "+rdd.count()+"\n")
-      //            consumelog.close()
-
       try {
         //分区追加
         rdd.toDF().write.mode("append").parquet("/user/hive/warehouse/test/month_=" + month + "/day_=" + day + "/hour_=" + hour + "/")
@@ -89,7 +84,6 @@ object hdfs2hive  {
 
       }
       val hiveConf = new HiveConf()
-      //hiveConf.set("hive.metastore.uris", "thrift://115.238.146.2:9083")
       val hiveClient = new HiveMetaStoreClient(hiveConf)
       val partitionValues = new ArrayList[String]()
       partitionValues.add(month)
