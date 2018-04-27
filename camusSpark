@@ -1,0 +1,1 @@
+Spark will consume data from the start offset and end offset based on the saved offset information
