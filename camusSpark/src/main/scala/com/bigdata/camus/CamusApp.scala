@@ -38,10 +38,8 @@ object CamusApp {
     val hour: String = sdf2.format(timeL)
     hour
   }
-  def main(args: Array[String]){
-    val job_time = ""
-    val path_prefix ="hdfs://192.168.100.2:8020"
-    val input_path = "/user/lifq/offset/offset.info"
+  def main(args: Array[String]){ 
+    val input_path = "/user/offset/offset.info"
     val conf = new SparkConf().setAppName("readKafka")
     conf.set("spark.serialize", "org.apache.spark.serializer.KryoSerializer")
       .set("spark.io.compression.codec", "org.apache.spark.io.SnappyCompressionCodec")
@@ -59,9 +57,9 @@ object CamusApp {
     val kafka_brokers ="192.168.100.60:9092,192.168.100.61:9092,192.168.100.62:9092"
     val kafkaParams = new util.HashMap[String, String]
     kafkaParams.put("metadata.broker.list", kafka_brokers)
-    val topics ="cdnlog_all_topic,cdnlog_c06_i06,cdnlog_c01_i05_new"
+    val topics ="all_topic,topic1,topic2"
     val white_topics = topics.split(",")
-    val output_path = "/user/lifq/result"
+    val output_path = "/user/result"
     val rdd = sc.textFile(path_prefix+input_path)
       .map(line => EtlRequest(line, white_topics)).filter(etlRequest => etlRequest!=null).repartition(360)
       .flatMap{
@@ -91,7 +89,7 @@ object CamusApp {
       }
        //println(rdd.count())
     //rdd.saveAsTextFile(path_prefix+output_path, classOf[GzipCodec])
-    rdd.saveAsHadoopFile(path_prefix+output_path, classOf[String], classOf[String], classOf[RDDMultipleTextOutputFormat], classOf[GzipCodec])
+    rdd.saveAsHadoopFile(output_path, classOf[String], classOf[String], classOf[RDDMultipleTextOutputFormat], classOf[GzipCodec])
     sc.stop()
   }
 
