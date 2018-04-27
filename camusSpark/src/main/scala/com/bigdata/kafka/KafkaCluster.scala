@@ -373,6 +373,8 @@ object KafkaCluster {
       new SimpleConsumerConfig(brokers, props)
     }
   }
-
+  def main(args: Array[String]) {
+    
+  }
  
 }
